@@ -1,7 +1,7 @@
-import {React, useRef} from 'react';
+import React, {useRef} from 'react';
 import MapView from 'react-native-maps';
-import { Marker } from "react-native-maps";
-import { StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import { Marker, Callout } from "react-native-maps";
+import { StyleSheet, View, Image, TouchableOpacity, Text} from 'react-native';
 import { Dimensions } from 'react-native'
 
 export default function App() {
@@ -23,6 +23,8 @@ export default function App() {
   const moia = {
     latitude: 41.8098263799972,
     longitude: 2.0972582839203664,
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
   }
   // Points of interest
   const covesDelToll = {
@@ -57,29 +59,54 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Text>HOLA</Text>
       <Image style={[styles.banner, { width: Dimensions.get('window').width }]} source={require("./assets/moia_banner.png")} />
-      <View style={[styles.horizontalContainer, { top: "15%" }]}>
+      <View style={[styles.horizontalContainer, { top: "13%" }]}>
         <TouchableOpacity onPress={() => goToLocation(ajuntament)}><Image source={require("./assets/photo_markers/ajuntament.png")} style={styles.markerImage} /></TouchableOpacity>
         <TouchableOpacity onPress={() => goToLocation(rafaelCasanova)}><Image source={require("./assets/photo_markers/casanova.png")} style={styles.markerImage} /></TouchableOpacity>
         <TouchableOpacity onPress={() => goToLocation(covesDelToll)}><Image source={require("./assets/photo_markers/coves.png")} style={styles.markerImage} /></TouchableOpacity>
       </View>
-      <View style={[styles.horizontalContainer, { top: "30%" }]}>
+      <View style={[styles.horizontalContainer, { top: "26%" }]}>
         <TouchableOpacity onPress={() => goToLocation(moliNou)}><Image source={require("./assets/photo_markers/moli_nou.png")} style={styles.markerImage} /></TouchableOpacity>
         <TouchableOpacity onPress={() => goToLocation(museuCoves)}><Image source={require("./assets/photo_markers/museu_coves.png")} style={styles.markerImage} /></TouchableOpacity>
         <TouchableOpacity onPress={() => goToLocation(santSebastia)}><Image source={require("./assets/photo_markers/sebastia.png")} style={styles.markerImage} /></TouchableOpacity>
       </View>
       <MapView
-        style={styles.map}
-        initialRegion={moia}
-        customMapStyle={require("./assets/map_style.json")}
-        ref={mapViewRef}>
-        <Marker coordinate={covesDelToll} pinColor="green" />
-        <Marker coordinate={rafaelCasanova} pinColor="yellow" />
-        <Marker coordinate={santSebastia} pinColor="yellow" />
-        <Marker coordinate={museuCoves} pinColor="aqua" />
-        <Marker coordinate={ajuntament} pinColor="violet" />
-        <Marker coordinate={moliNou} pinColor="violet" />
-      </MapView>
+      style={styles.map}
+      initialRegion={moia}
+      customMapStyle={require("./assets/map_style.json")}
+      ref={mapViewRef}>
+      <Marker coordinate={covesDelToll} pinColor="green">
+        <Callout>
+          <Text style={styles.calloutText}>Coves del Toll</Text>
+        </Callout>
+      </Marker>
+      <Marker coordinate={rafaelCasanova} pinColor="yellow">
+        <Callout>
+          <Text style={styles.calloutText}>Rafael Casanova</Text>
+        </Callout>
+      </Marker>
+      <Marker coordinate={santSebastia} pinColor="yellow">
+        <Callout>
+          <Text style={styles.calloutText}>Sant Sebastià</Text>
+        </Callout>
+      </Marker>
+      <Marker coordinate={museuCoves} pinColor="aqua">
+        <Callout>
+          <Text style={styles.calloutText}>Museu de les Coves</Text>
+        </Callout>
+      </Marker>
+      <Marker coordinate={ajuntament} pinColor="violet">
+        <Callout>
+          <Text style={styles.calloutText}>Ajuntament</Text>
+        </Callout>
+      </Marker>
+      <Marker coordinate={moliNou} pinColor="violet">
+        <Callout>
+          <Text style={styles.calloutText}>Molí Nou</Text>
+        </Callout>
+      </Marker>
+    </MapView>
     </View>
   );
 }
@@ -111,7 +138,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 1,
   },
+  callout: {
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    zIndex: 2
+  },
   calloutText: {
-
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  siteText: {
+    zIndex: 2,
+    position: "absolute",
+    fontSize: 22,
   }
 });
