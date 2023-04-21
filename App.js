@@ -1,79 +1,78 @@
-import React from 'react';
+import {React, useRef} from 'react';
 import MapView from 'react-native-maps';
 import { Marker } from "react-native-maps";
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import { Dimensions } from 'react-native'
 
-
 export default function App() {
+
+  const mapViewRef = useRef(null);
+  // Zooms into a marker
+  function goToLocation(loc) {
+    const newRegion = {
+      latitude: loc.latitude,
+      longitude: loc.longitude,
+      latitudeDelta: 0.001,
+      longitudeDelta: 0.001,
+    };
+    // Zooms smothly into a location, in the time defined in the second parameter
+    mapViewRef.current.animateToRegion(newRegion, 500);
+  }
 
   // Main town
   const moia = {
     latitude: 41.8098263799972,
     longitude: 2.0972582839203664,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
   }
   // Points of interest
   const covesDelToll = {
     latitude: 41.805818795206555,
     longitude: 2.151204112151171,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
   }
 
   const rafaelCasanova = {
     latitude: 41.81183556786147,
     longitude: 2.099205493186476,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
   }
 
   const santSebastia = {
     latitude: 41.813182411538286,
     longitude: 2.097266689415215,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
   }
 
   const museuCoves = {
     latitude: 41.81162647084912,
     longitude: 2.0982430399961873,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
   }
 
   const ajuntament = {
     latitude: 41.81308189705902,
     longitude: 2.097091539131859,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
   }
 
   const moliNou = {
     latitude: 41.820339869173644,
     longitude: 2.10341206611254,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
   }
 
   return (
     <View style={styles.container}>
       <Image style={[styles.banner, { width: Dimensions.get('window').width }]} source={require("./assets/moia_banner.png")} />
       <View style={[styles.horizontalContainer, { top: "15%" }]}>
-        <Image source={require("./assets/photo_markers/ajuntament.png")} style={styles.markerImage} />
-        <Image source={require("./assets/photo_markers/casanova.png")} style={styles.markerImage} />
-        <Image source={require("./assets/photo_markers/coves.png")} style={styles.markerImage} />
+        <TouchableOpacity onPress={() => goToLocation(ajuntament)}><Image source={require("./assets/photo_markers/ajuntament.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(rafaelCasanova)}><Image source={require("./assets/photo_markers/casanova.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(covesDelToll)}><Image source={require("./assets/photo_markers/coves.png")} style={styles.markerImage} /></TouchableOpacity>
       </View>
       <View style={[styles.horizontalContainer, { top: "30%" }]}>
-        <Image source={require("./assets/photo_markers/moli_nou.png")} style={styles.markerImage} />
-        <Image source={require("./assets/photo_markers/museu_coves.png")} style={styles.markerImage} />
-        <Image source={require("./assets/photo_markers/sebastia.png")} style={styles.markerImage} />
+        <TouchableOpacity onPress={() => goToLocation(moliNou)}><Image source={require("./assets/photo_markers/moli_nou.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(museuCoves)}><Image source={require("./assets/photo_markers/museu_coves.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(santSebastia)}><Image source={require("./assets/photo_markers/sebastia.png")} style={styles.markerImage} /></TouchableOpacity>
       </View>
       <MapView
         style={styles.map}
         initialRegion={moia}
-        customMapStyle={require("./assets/map_style.json")}>
+        customMapStyle={require("./assets/map_style.json")}
+        ref={mapViewRef}>
         <Marker coordinate={covesDelToll} pinColor="green" />
         <Marker coordinate={rafaelCasanova} pinColor="yellow" />
         <Marker coordinate={santSebastia} pinColor="yellow" />
@@ -112,4 +111,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 1,
   },
+  calloutText: {
+
+  }
 });
