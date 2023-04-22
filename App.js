@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import MapView from 'react-native-maps';
 import { Marker, Callout } from "react-native-maps";
 import { StyleSheet, View, Image, TouchableOpacity, Text} from 'react-native';
@@ -7,21 +7,24 @@ import { Dimensions } from 'react-native'
 export default function App() {
 
   const mapViewRef = useRef(null);
+  const [siteText, setSiteText] = useState('Welcome to Moià!');
   // Zooms into a marker
-  function goToLocation(loc) {
+  // We add a difference to the latitude so the marker doesn't get close to the photos
+  function goToLocation(loc, name) {
     const newRegion = {
-      latitude: loc.latitude,
+      latitude: loc.latitude+0.0002,
       longitude: loc.longitude,
       latitudeDelta: 0.001,
       longitudeDelta: 0.001,
     };
     // Zooms smothly into a location, in the time defined in the second parameter
     mapViewRef.current.animateToRegion(newRegion, 500);
+    setSiteText(name)
   }
 
   // Main town
   const moia = {
-    latitude: 41.8098263799972,
+    latitude: 41.8098263799972+0.004,
     longitude: 2.0972582839203664,
     latitudeDelta: 0.02,
     longitudeDelta: 0.02,
@@ -59,17 +62,19 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>HOLA</Text>
       <Image style={[styles.banner, { width: Dimensions.get('window').width }]} source={require("./assets/moia_banner.png")} />
       <View style={[styles.horizontalContainer, { top: "13%" }]}>
-        <TouchableOpacity onPress={() => goToLocation(ajuntament)}><Image source={require("./assets/photo_markers/ajuntament.png")} style={styles.markerImage} /></TouchableOpacity>
-        <TouchableOpacity onPress={() => goToLocation(rafaelCasanova)}><Image source={require("./assets/photo_markers/casanova.png")} style={styles.markerImage} /></TouchableOpacity>
-        <TouchableOpacity onPress={() => goToLocation(covesDelToll)}><Image source={require("./assets/photo_markers/coves.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(ajuntament, "Ajuntament")}><Image source={require("./assets/photo_markers/ajuntament.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(rafaelCasanova, "Monument a Rafael Casanova")}><Image source={require("./assets/photo_markers/casanova.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(covesDelToll, "Les Coves del Toll")}><Image source={require("./assets/photo_markers/coves.png")} style={styles.markerImage} /></TouchableOpacity>
       </View>
       <View style={[styles.horizontalContainer, { top: "26%" }]}>
-        <TouchableOpacity onPress={() => goToLocation(moliNou)}><Image source={require("./assets/photo_markers/moli_nou.png")} style={styles.markerImage} /></TouchableOpacity>
-        <TouchableOpacity onPress={() => goToLocation(museuCoves)}><Image source={require("./assets/photo_markers/museu_coves.png")} style={styles.markerImage} /></TouchableOpacity>
-        <TouchableOpacity onPress={() => goToLocation(santSebastia)}><Image source={require("./assets/photo_markers/sebastia.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(moliNou, "El Molí Nou")}><Image source={require("./assets/photo_markers/moli_nou.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(museuCoves, "Museu de les Coves del Toll")}><Image source={require("./assets/photo_markers/museu_coves.png")} style={styles.markerImage} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => goToLocation(santSebastia, "Monument a Sant Sebastià")}><Image source={require("./assets/photo_markers/sebastia.png")} style={styles.markerImage} /></TouchableOpacity>
+      </View>
+      <View style={[styles.horizontalContainer, { top: "80%", backgroundColor: 'rgba(255, 255, 255, 0.5)', opacity: 50}]}>
+        <Text style={styles.siteText}>{siteText}</Text>
       </View>
       <MapView
       style={styles.map}
@@ -77,6 +82,7 @@ export default function App() {
       customMapStyle={require("./assets/map_style.json")}
       ref={mapViewRef}>
       <Marker coordinate={covesDelToll} pinColor="green">
+        {/* This is called when the user touches the marker */}
         <Callout>
           <Text style={styles.calloutText}>Coves del Toll</Text>
         </Callout>
@@ -123,7 +129,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: "center",
     position: "absolute",
-    top: "20%",
     left: 0,
     right: 0,
     zIndex: 1,
@@ -131,7 +136,9 @@ const styles = StyleSheet.create({
   markerImage: {
     width: 100,
     height: 100,
-    marginHorizontal: 10,
+    marginHorizontal: 4,
+    borderColor: "black",
+    borderWidth: 1,
   },
   banner: {
     height: 100,
@@ -152,7 +159,7 @@ const styles = StyleSheet.create({
   },
   siteText: {
     zIndex: 2,
-    position: "absolute",
-    fontSize: 22,
+    fontSize: 26,
+    fontWeight: "bold"
   }
 });
